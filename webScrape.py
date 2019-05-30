@@ -4,7 +4,7 @@ import datetime
 import bs4
 from bs4 import BeautifulSoup
 
-##################### Web Scrape #######################
+########################################################
 
 # Helper functions to download page and save
 def save_html(html, path):
@@ -19,20 +19,19 @@ def parse_html(html, arr):
     for extract in html:
         arr.append(extract.text.strip('\n '))
 
+# Prompts user to pick a movie, returns chosen movie
 def menu(title_showtime):
+    list_of_movies = []
+
     print("Select Movie to Watch:")
     for index, movie_title in enumerate(title_showtime):
         print(index, movie_title)
+        list_of_movies.append(movie_title)
+
+    print()
     choice = input("Enter a number from choices above:")
-    for index, movie_times in enumerate(title_showtime.items()):
-        print(choice, index)
-        if choice == index:
-            print('hello')
-            print(index, movie_times)
-        # else:
-        #     print("Choice is invalid")
-        #     break
-    
+    chosen_movie = list_of_movies[int(choice)]
+    return chosen_movie
 
 # Get time of today's date
 now = datetime.datetime.now()
@@ -51,14 +50,7 @@ html = open_html('sierra-vista-movies.html')
 soup = BeautifulSoup(html, 'html.parser')
 # save_html(soup.prettify(), 'pretty-sierra.html')
 
-# movie_list = []
-# time_list = []
-# movies = soup.find_all('h4', 'theater-detail-movie-title')
-# show_times = soup.find_all('a', 'button showtime mtc-showtimes')
-# parse_html(movies, movie_list)
-# parse_html(show_times, time_list)
-# print(movie_list, time_list)
-######################################
+############### Extract Movies and Set Times #######################
 title_showtime = {}
 movies = soup.find_all('div', class_='small-12 column theater-detail-movie-darken')
 
@@ -84,9 +76,9 @@ for movie_title in movies:
         # title_showtime[title] = time
 
 # print(title_showtime)
-
-
-menu(title_showtime)
+chosen_movie = menu(title_showtime)
+print("Getting available seats for all available set times:")
+print(title_showtime.get(chosen_movie))
 
 
 
